@@ -1,0 +1,12 @@
+{
+    "id": "{CF6B75A5-C573-7030-0D75-2F50A8A42B73}",
+    "author": "Ulrich Bittner",
+    "name": "Signalleuchte",
+    "url": "https://github.com/ubittner/Signalleuchte",
+    "compatibility": {
+        "version": "5.2"
+    },
+    "version": "4.0",
+    "build": 1,
+    "date": 1579366800
+}

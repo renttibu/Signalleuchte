@@ -1,0 +1,575 @@
+{
+  "elements": [
+    {
+      "type": "ExpansionPanel",
+      "caption": "Instanzinformationen",
+      "items": [
+        {
+          "type": "Image",
+          "image": "data:image/png;base64,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"
+        },
+        {
+          "type": "Label",
+          "caption": "Ein Gemeinschaftsprojekt von Normen Thiel und Ulrich Bittner\n"
+        },
+        {
+          "type": "Label",
+          "caption": "Mit dieser Instanz kann eine Signalleuchte geschaltet werden. \nWeitere Informationen entnehmen Sie bitte der Dokumentation.\n"
+        },
+        {
+          "type": "Label",
+          "caption": "Symcon Version:\t5.2>"
+        },
+        {
+          "type": "Label",
+          "caption": "Name:\t\t\tSignalleuchte"
+        },
+        {
+          "type": "Label",
+          "caption": "Version:\t\t\t4.00-1"
+        },
+        {
+          "type": "Label",
+          "caption": "Datum:\t\t\t18. Januar 2020"
+        },
+        {
+          "type": "Label",
+          "caption": "Uhrzeit:\t\t\t18:00"
+        },
+        {
+          "type": "Label",
+          "caption": "Entwickler:\t\tUlrich Bittner"
+        },
+        {
+          "type": "Label",
+          "caption": "Präfix:\t\t\tSIGL"
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Anzeigeoptionen",
+      "items": [
+        {
+          "type": "Label",
+          "caption": "Bitte wählen Sie aus, welche Funktionen oder Informationen angezeigt werden sollen:"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableSystemStateColor",
+          "caption": "Systemstatus Farbe"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableSystemStateBrightness",
+          "caption": "Systemstatus Helligkeit"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableDoorWindowStateColor",
+          "caption": "Tür- / Fensterstatus Farbe"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableDoorWindowStateBrightness",
+          "caption": "Tür- / Fensterstatus Helligkeit"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableAlarmStateColor",
+          "caption": "Alarmstatus Farbe"
+        },
+        {
+          "type": "CheckBox",
+          "name": "EnableAlarmStateBrightness",
+          "caption": "Alarmstatus Helligkeit"
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Systemstatus",
+      "items": [
+        {
+          "type": "Label",
+          "caption": "Grün\t\t\t= unscharf\nRot\t\t\t\t= scharf\nGelb\t\t\t= verzögert scharf"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte fügen Sie die Signalleuchten hinzu:"
+        },
+        {
+          "type": "List",
+          "name": "SystemStateSignalLamps",
+          "caption": "Signalleuchten für den Systemstatus",
+          "rowCount": 3,
+          "add": true,
+          "delete": true,
+          "columns": [
+            {
+              "caption": "Aktiviert",
+              "name": "Use",
+              "width": "100px",
+              "add": true,
+              "edit": {
+                "type": "CheckBox"
+              }
+            },
+            {
+              "caption": "Gerätetyp",
+              "name": "Type",
+              "width": "200px",
+              "add": 0,
+              "edit": {
+                "type": "Select",
+                "options": [
+                  {
+                    "caption": "Bitte auswählen",
+                    "value": 0
+                  },
+                  {
+                    "caption": "1 - Variable",
+                    "value": 1
+                  },
+                  {
+                    "caption": "2 - Skript",
+                    "value": 2
+                  },
+                  {
+                    "caption": "3 - HmIP-BSL (Kanal 8 - LED oben)",
+                    "value": 3
+                  },
+                  {
+                    "caption": "4 - HmIP-BSL (Kanal 12 - LED unten)",
+                    "value": 4
+                  },
+                  {
+                    "caption": "5 - HmIP-MP3P (Kanal 6 - Leuchtrahmen)",
+                    "value": 5
+                  }
+                ]
+              }
+            },
+            {
+              "caption": "ID",
+              "name": "ID",
+              "width": "350px",
+              "add": -1,
+              "edit": {
+                "type": "SelectObject"
+              }
+            },
+            {
+              "caption": "Optionen",
+              "name": "Options",
+              "width": "350px",
+              "add": 0,
+              "edit": {
+                "type": "Select",
+                "options": [
+                  {
+                    "caption": "Bitte auswählen",
+                    "value": 0
+                  },
+                  {
+                    "caption": "1 - unscharf",
+                    "value": 1
+                  },
+                  {
+                    "caption": "2 - verzögert scharf",
+                    "value": 2
+                  },
+                  {
+                    "caption": "3 - scharf",
+                    "value": 3
+                  },
+                  {
+                    "caption": "4 - unscharf - verzögert scharf",
+                    "value": 4
+                  },
+                  {
+                    "caption": "5 - verzögert scharf - scharf",
+                    "value": 5
+                  },
+                  {
+                    "caption": "6 - unscharf - scharf",
+                    "value": 6
+                  },
+                  {
+                    "caption": "7 - unscharf - verzögert scharf - scharf",
+                    "value": 7
+                  }
+                ]
+              }
+            },
+            {
+              "caption": "Helligkeit",
+              "name": "Brightness",
+              "width": "100px",
+              "add": 10,
+              "edit": {
+                "type": "NumberSpinner",
+                "suffix": "%"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Label",
+          "caption": "\nWird ein Skript verwendet, so wird der Status dem Skript übergeben:\n\n$_IPS['State']\n\n0\t\t\t\t= unscharf\n1\t\t\t\t= scharf\n2\t\t\t\t= verzögert scharf"
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Tür- / Fensterstatus",
+      "items": [
+        {
+          "type": "Label",
+          "caption": "Grün\t\t\t= geschlossen\nBlau\t\t\t= geöffnet"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte fügen Sie die Signalleuchten hinzu:"
+        },
+        {
+          "type": "List",
+          "name": "DoorWindowStateSignalLamps",
+          "caption": "Signalleuchten für den Tür- / Fensterstatus",
+          "rowCount": 3,
+          "add": true,
+          "delete": true,
+          "columns": [
+            {
+              "caption": "Aktiviert",
+              "name": "Use",
+              "width": "100px",
+              "add": true,
+              "edit": {
+                "type": "CheckBox"
+              }
+            },
+            {
+              "caption": "Gerätetyp",
+              "name": "Type",
+              "width": "200px",
+              "add": 0,
+              "edit": {
+                "type": "Select",
+                "options": [
+                  {
+                    "caption": "Bitte auswählen",
+                    "value": 0
+                  },
+                  {
+                    "caption": "1 - Variable",
+                    "value": 1
+                  },
+                  {
+                    "caption": "2 - Skript",
+                    "value": 2
+                  },
+                  {
+                    "caption": "3 - HmIP-BSL (Kanal 8 - LED oben)",
+                    "value": 3
+                  },
+                  {
+                    "caption": "4 - HmIP-BSL (Kanal 12 - LED unten)",
+                    "value": 4
+                  },
+                  {
+                    "caption": "5 - HmIP-MP3P (Kanal 6 - Leuchtrahmen)",
+                    "value": 5
+                  }
+                ]
+              }
+            },
+            {
+              "caption": "ID",
+              "name": "ID",
+              "width": "350px",
+              "add": -1,
+              "edit": {
+                "type": "SelectObject"
+              }
+            },
+            {
+              "caption": "Optionen",
+              "name": "Options",
+              "width": "350px",
+              "add": 0,
+              "edit": {
+                "type": "Select",
+                "options": [
+                  {
+                    "caption": "Bitte auswählen",
+                    "value": 0
+                  },
+                  {
+                    "caption": "1 - geschlossen",
+                    "value": 1
+                  },
+                  {
+                    "caption": "2 - geöffnet",
+                    "value": 2
+                  },
+                  {
+                    "caption": "3 - geschlossen - geöffnet",
+                    "value": 3
+                  }
+                ]
+              }
+            },
+            {
+              "caption": "Helligkeit",
+              "name": "Brightness",
+              "width": "100px",
+              "add": 10,
+              "edit": {
+                "type": "NumberSpinner",
+                "suffix": "%"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Label",
+          "caption": "\nWird ein Skript verwendet, so wird der Status dem Skript übergeben:\n\n$_IPS['State']\n\n0\t\t\t\t= geschlossen\n1\t\t\t\t= geöffnet"
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Alarmstatus",
+      "items": [
+        {
+          "type": "Label",
+          "caption": "Grün\t\t\t= kein Alarm\nRot\t\t\t\t= Alarm\nGelb\t\t\t= Voralarm"
+        },
+        {
+          "type": "Label",
+          "caption": "\nBitte fügen Sie die Signalleuchten hinzu:"
+        },
+        {
+          "type": "List",
+          "name": "AlarmStateSignalLamps",
+          "caption": "Signalleuchten für den Alarmstatus",
+          "rowCount": 3,
+          "add": true,
+          "delete": true,
+          "columns": [
+            {
+              "caption": "Aktiviert",
+              "name": "Use",
+              "width": "100px",
+              "add": true,
+              "edit": {
+                "type": "CheckBox"
+              }
+            },
+            {
+              "caption": "Gerätetyp",
+              "name": "Type",
+              "width": "200px",
+              "add": 0,
+              "edit": {
+                "type": "Select",
+                "options": [
+                  {
+                    "caption": "Bitte auswählen",
+                    "value": 0
+                  },
+                  {
+                    "caption": "1 - Variable",
+                    "value": 1
+                  },
+                  {
+                    "caption": "2 - Skript",
+                    "value": 2
+                  },
+                  {
+                    "caption": "3 - HmIP-BSL (Kanal 8 - LED oben)",
+                    "value": 3
+                  },
+                  {
+                    "caption": "4 - HmIP-BSL (Kanal 12 - LED unten)",
+                    "value": 4
+                  },
+                  {
+                    "caption": "5 - HmIP-MP3P (Kanal 6 - Leuchtrahmen)",
+                    "value": 5
+                  }
+                ]
+              }
+            },
+            {
+              "caption": "ID",
+              "name": "ID",
+              "width": "350px",
+              "add": -1,
+              "edit": {
+                "type": "SelectObject"
+              }
+            },
+            {
+              "caption": "Optionen",
+              "name": "Options",
+              "width": "350px",
+              "add": 0,
+              "edit": {
+                "type": "Select",
+                "options": [
+                  {
+                    "caption": "Bitte auswählen",
+                    "value": 0
+                  },
+                  {
+                    "caption": "1 - Kein Alarm",
+                    "value": 1
+                  },
+                  {
+                    "caption": "2 - Voralarm",
+                    "value": 2
+                  },
+                  {
+                    "caption": "3 - Alarm",
+                    "value": 3
+                  },
+                  {
+                    "caption": "4 - Kein Alarm - Voralarm",
+                    "value": 4
+                  },
+                  {
+                    "caption": "5 - Voralarm - Alarm",
+                    "value": 5
+                  },
+                  {
+                    "caption": "6 - Kein Alarm - Alarm",
+                    "value": 6
+                  },
+                  {
+                    "caption": "7 - Kein Alarm - Voralarm - Alarm",
+                    "value": 7
+                  }
+                ]
+              }
+            },
+            {
+              "caption": "Helligkeit",
+              "name": "Brightness",
+              "width": "100px",
+              "add": 10,
+              "edit": {
+                "type": "NumberSpinner",
+                "suffix": "%"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Label",
+          "caption": "\nWird ein Skript verwendet, so wird der Status dem Skript übergeben:\n\n$_IPS['State']\n\n0\t\t\t\t= kein Alarm\n1\t\t\t\t= Alarm\n2\t\t\t\t= Voralarm"
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "ExpansionPanel",
+      "caption": "Testbereich",
+      "items": [
+        {
+          "type": "TestCenter"
+        }
+      ]
+    },
+    {
+      "type": "ExpansionPanel",
+      "caption": "Simulation",
+      "items": [
+        {
+          "type": "RowLayout",
+          "items": [
+            {
+              "type": "Button",
+              "caption": "Systemstatus unscharf",
+              "onClick": "SIGL_SetSystemStateSignalLamp($id, 0, 0, 0, 0);"
+            },
+            {
+              "type": "Button",
+              "caption": "Systemstatus scharf",
+              "onClick": "SIGL_SetSystemStateSignalLamp($id, 1, 0, 0, 0);"
+            },
+            {
+              "type": "Button",
+              "caption": "Systemstatus verzögert scharf",
+              "onClick": "SIGL_SetSystemStateSignalLamp($id, 2, 0, 0, 0);"
+            }
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {
+              "type": "Button",
+              "caption": "Türen und Fenster geschlossen",
+              "onClick": "SIGL_SetDoorWindowStateSignalLamp($id, 0, 0, 0, 0, 0);"
+            },
+            {
+              "type": "Button",
+              "caption": "Türen und Fenster geöffnet",
+              "onClick": "SIGL_SetDoorWindowStateSignalLamp($id, 1, 0, 0, 0, 0);"
+            }
+          ]
+        },
+        {
+          "type": "RowLayout",
+          "items": [
+            {
+              "type": "Button",
+              "caption": "Kein Alarm",
+              "onClick": "SIGL_SetAlarmStateSignalLamp($id, 0, 0, 0);"
+            },
+            {
+              "type": "Button",
+              "caption": "Alarm",
+              "onClick": "SIGL_SetAlarmStateSignalLamp($id, 1, 0, 0);"
+            },
+            {
+              "type": "Button",
+              "caption": "Voralarm",
+              "onClick": "SIGL_SetAlarmStateSignalLamp($id, 2, 0, 0);"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "status": [
+    {
+      "code": 101,
+      "icon": "active",
+      "caption": "Signalleuchte wird erstellt"
+    },
+    {
+      "code": 102,
+      "icon": "active",
+      "caption": "Signalleuchte ist aktiv"
+    },
+    {
+      "code": 103,
+      "icon": "active",
+      "caption": "Signalleuchte wird gelöscht"
+    },
+    {
+      "code": 104,
+      "icon": "inactive",
+      "caption": "Signalleuchte ist inaktiv"
+    },
+    {
+      "code": 200,
+      "icon": "inactive",
+      "caption": "Es ist Fehler aufgetreten, weitere Informationen unter Meldungen oder im Log"
+    }
+  ]
+}
