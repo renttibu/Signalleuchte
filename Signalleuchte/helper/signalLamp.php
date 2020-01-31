@@ -804,25 +804,25 @@ trait SIGL_signalLamp
         }
         // Signal lamp
         if ($SignalLamp != 0 && IPS_ObjectExists($SignalLamp)) {
-            // Color
             $difference = $this->CheckValueDifference($SignalLamp, 'COLOR', (string) $Color);
             $this->SendDebug(__FUNCTION__, 'Color: ' . $Color . ', different color: ' . json_encode($difference), 0);
             if ($difference) {
+                // Color
                 $setColor = @HM_WriteValueInteger($SignalLamp, 'COLOR', $Color);
                 if (!$setColor) {
                     $errorMessage = 'Color could not be set to value: ' . $Color;
                     $this->LogMessage($errorMessage, 10205);
                     $this->SendDebug(__FUNCTION__, $errorMessage, 0);
                 }
-            }
-            // Brightness
-            $brightness = $Brightness / 100;
-            $level = (float) str_replace(',', '.', $brightness);
-            $setBrightness = @HM_WriteValueFloat($SignalLamp, 'LEVEL', $level);
-            if (!$setBrightness) {
-                $errorMessage = 'Brightness could not be set to value: ' . $level;
-                $this->LogMessage($errorMessage, 10205);
-                $this->SendDebug(__FUNCTION__, $errorMessage, 0);
+                // Brightness
+                $brightness = $Brightness / 100;
+                $level = (float) str_replace(',', '.', $brightness);
+                $setBrightness = @HM_WriteValueFloat($SignalLamp, 'LEVEL', $level);
+                if (!$setBrightness) {
+                    $errorMessage = 'Brightness could not be set to value: ' . $level;
+                    $this->LogMessage($errorMessage, 10205);
+                    $this->SendDebug(__FUNCTION__, $errorMessage, 0);
+                }
             }
         }
         // Semaphore leave
