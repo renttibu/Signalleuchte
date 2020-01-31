@@ -804,22 +804,26 @@ trait SIGL_signalLamp
         }
         // Signal lamp
         if ($SignalLamp != 0 && IPS_ObjectExists($SignalLamp)) {
-            $difference = $this->CheckValueDifference($SignalLamp, 'COLOR', (string) $Color);
-            $this->SendDebug(__FUNCTION__, 'Color: ' . $Color . ', different color: ' . json_encode($difference), 0);
-            if ($difference) {
+            $colorDifference = $this->CheckColorDifference($SignalLamp, $Color);
+            if ($colorDifference) {
                 // Color
+                $this->SendDebug(__FUNCTION__, 'Farbwert wird auf den Wert ' . $Color . ' gesetzt.', 0);
                 $setColor = @HM_WriteValueInteger($SignalLamp, 'COLOR', $Color);
                 if (!$setColor) {
-                    $errorMessage = 'Color could not be set to value: ' . $Color;
+                    $errorMessage = 'Farbwert konnte nicht auf den Wert ' . $Color . ' gesetzt werden.';
                     $this->LogMessage($errorMessage, 10205);
                     $this->SendDebug(__FUNCTION__, $errorMessage, 0);
                 }
-                // Brightness
-                $brightness = $Brightness / 100;
-                $level = (float) str_replace(',', '.', $brightness);
+            }
+            // Brightness
+            $brightness = $Brightness / 100;
+            $level = (float) str_replace(',', '.', $brightness);
+            $levelDifference = $this->CheckLevelDifference($SignalLamp, $level);
+            if ($levelDifference) {
+                $this->SendDebug(__FUNCTION__, 'Helligkeit wird auf den Wert ' . $level . ' gesetzt.', 0);
                 $setBrightness = @HM_WriteValueFloat($SignalLamp, 'LEVEL', $level);
                 if (!$setBrightness) {
-                    $errorMessage = 'Brightness could not be set to value: ' . $level;
+                    $errorMessage = 'Helligkeit konnte nicht auf den Wert ' . $level . ' gesetzt werden.';
                     $this->LogMessage($errorMessage, 10205);
                     $this->SendDebug(__FUNCTION__, $errorMessage, 0);
                 }
@@ -830,27 +834,58 @@ trait SIGL_signalLamp
     }
 
     /**
-     * Checks if the value is different.
+     * Checks if the color value is different.
      *
      * @param int $SignalLamp
-     * @param string $ChannelName
-     * @param string $Value
+     * @param int $Value
      * @return bool
      */
-    private function CheckValueDifference(int $SignalLamp, string $ChannelName, string $Value): bool
+    private function CheckColorDifference(int $SignalLamp, int $Value): bool
     {
-        $difference = true;
+        $this->SendDebug(__FUNCTION__, 'Angefragter Farbwert: ' . $Value, 0);
+        $colorDifference = true;
         $channelParameters = IPS_GetChildrenIDs($SignalLamp);
         if (!empty($channelParameters)) {
             foreach ($channelParameters as $channelParameter) {
                 $ident = IPS_GetObject($channelParameter)['ObjectIdent'];
-                if ($ident == $ChannelName) {
-                    if (GetValue($channelParameter) == $Value) {
-                        $difference = false;
+                if ($ident == 'COLOR') {
+                    $actualValue = GetValueInteger($channelParameter);
+                    $this->SendDebug(__FUNCTION__, 'Aktueller Farbwert: ' . $actualValue, 0);
+                    if ($actualValue == $Value) {
+                        $colorDifference = false;
                     }
                 }
             }
         }
-        return $difference;
+        $this->SendDebug(__FUNCTION__, 'Unterschiedliche Farbwerte: ' . json_encode($colorDifference), 0);
+        return $colorDifference;
+    }
+
+    /**
+     * Checks if the level value is different.
+     *
+     * @param int $SignalLamp
+     * @param float $Value
+     * @return bool
+     */
+    private function CheckLevelDifference(int $SignalLamp, float $Value): bool
+    {
+        $this->SendDebug(__FUNCTION__, 'Angefragter Helligkeitswert: ' . $Value, 0);
+        $levelDifference = true;
+        $channelParameters = IPS_GetChildrenIDs($SignalLamp);
+        if (!empty($channelParameters)) {
+            foreach ($channelParameters as $channelParameter) {
+                $ident = IPS_GetObject($channelParameter)['ObjectIdent'];
+                if ($ident == 'LEVEL') {
+                    $actualValue = GetValueFloat($channelParameter);
+                    $this->SendDebug(__FUNCTION__, 'Aktueller Helligkeitswert: ' . $actualValue, 0);
+                    if ($actualValue == $Value) {
+                        $levelDifference = false;
+                    }
+                }
+            }
+        }
+        $this->SendDebug(__FUNCTION__, 'Unterschiedliche Helligkeitswerte: ' . json_encode($levelDifference), 0);
+        return $levelDifference;
     }
 }
