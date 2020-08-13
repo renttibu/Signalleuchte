@@ -18,10 +18,10 @@
  * @see         https://github.com/ubittner/Signalleuchte
  *
  * @guids       Library
- *              {CF6B75A5-C573-7030-0D75-2F50A8A42B73}
+ * 	            {BFB49220-5188-61CA-2C21-85A457F8D77B}
  *
  *              Signalleuchte
- *             	{BFB49220-5188-61CA-2C21-85A457F8D77B}
+ *              {CF6B75A5-C573-7030-0D75-2F50A8A42B73}
  */
 
 declare(strict_types=1);
@@ -37,8 +37,8 @@ class Signalleuchte extends IPSModule
 
     // Constants
     private const DELAY_MILLISECONDS = 250;
-    private const SIGNALLEUCHTE_LIBRARY_GUID = '{CF6B75A5-C573-7030-0D75-2F50A8A42B73}';
-    private const SIGNALLEUCHTE_MODULE_GUID = '{BFB49220-5188-61CA-2C21-85A457F8D77B}';
+    private const SIGNALLEUCHTE_LIBRARY_GUID = '{BFB49220-5188-61CA-2C21-85A457F8D77B}';
+    private const SIGNALLEUCHTE_MODULE_GUID = '{CF6B75A5-C573-7030-0D75-2F50A8A42B73}';
 
     public function Destroy()
     {
