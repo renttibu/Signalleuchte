@@ -63,7 +63,7 @@
       "items": [
         {
           "type": "Label",
-          "caption": "Bitte wählen Sie aus, welche Funktionen oder Informationen angezeigt werden sollen:"
+          "caption": "Bitte wählen Sie aus, welche Funktionen verwendet werden sollen:"
         },
         {
           "type": "CheckBox",
