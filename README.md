@@ -11,6 +11,6 @@ Ein Gemeinschaftsprojekt von Normen Thiel und Ulrich Bittner
 [![Run Tests](https://github.com/ubittner/Signalleuchte/workflows/Run%20Tests/badge.svg)](https://github.com/ubittner/Signalleuchte/actions)  
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-Folgende Module beinhaltet das Alarmanruf Repository:
+Folgende Module beinhaltet das Signalleuchte Repository:
 
 - __Signalleuchte__ ([Dokumentation](Signalleuchte))  
