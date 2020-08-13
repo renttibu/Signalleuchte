@@ -1,6 +1,5 @@
 <?php
 
-// Declare
 declare(strict_types=1);
 
 trait SIGL_signalLamp
@@ -31,9 +30,17 @@ trait SIGL_signalLamp
      * 1    = alarm
      * 2    = pre alarm
      * 3    = other
+     * @throws Exception
+     * @throws Exception
      */
     public function SetSystemStateSignalLamp(int $State, int $Color, int $Brightness, int $AlarmState): void
     {
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
+        if ($this->GetValue('NightMode')) {
+            return;
+        }
         $signalLamps = json_decode($this->ReadPropertyString('SystemStateSignalLamps'));
         if (!empty($signalLamps)) {
             $devices = 0;
@@ -293,9 +300,17 @@ trait SIGL_signalLamp
      * 1    = alarm
      * 2    = pre alarm
      * 3    = other
+     * @throws Exception
+     * @throws Exception
      */
     public function SetDoorWindowStateSignalLamp(int $State, int $Color, int $Brightness, int $SystemState, int $AlarmState): void
     {
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
+        if ($this->GetValue('NightMode')) {
+            return;
+        }
         // Signal lamps
         $signalLamps = json_decode($this->ReadPropertyString('DoorWindowStateSignalLamps'));
         if (!empty($signalLamps)) {
@@ -478,9 +493,17 @@ trait SIGL_signalLamp
      * 7    = white
      *
      * @param int $Brightness
+     * @throws Exception
+     * @throws Exception
      */
     public function SetAlarmStateSignalLamp(int $State, int $Color, int $Brightness): void
     {
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
+        if ($this->GetValue('NightMode')) {
+            return;
+        }
         $signalLamps = json_decode($this->ReadPropertyString('AlarmStateSignalLamps'));
         if (!empty($signalLamps)) {
             $devices = 0;
@@ -708,7 +731,71 @@ trait SIGL_signalLamp
         }
     }
 
-    //#################### Private
+    /**
+     * Toggles the night mode
+     *
+     * @param bool $State
+     * false    night mode is off, normal mode
+     * true     night mode is on, device is off
+     * @throws Exception
+     * @throws Exception
+     */
+    public function ToggleNightMode(bool $State): void
+    {
+        // Off
+        if (!$State) {
+            $this->SetValue('NightMode', false);
+        }
+
+        // On
+        if ($State) {
+            $this->SetValue('NightMode', true);
+            $devices = [];
+            // System state
+            $signalLamps = json_decode($this->ReadPropertyString('SystemStateSignalLamps'));
+            if (!empty($signalLamps)) {
+                foreach ($signalLamps as $signalLamp) {
+                    if ($signalLamp->Use) {
+                        array_push($devices, $signalLamp->ID);
+                    }
+                }
+            }
+            // Door window state
+            $signalLamps = json_decode($this->ReadPropertyString('DoorWindowStateSignalLamps'));
+            if (!empty($signalLamps)) {
+                foreach ($signalLamps as $signalLamp) {
+                    if ($signalLamp->Use) {
+                        array_push($devices, $signalLamp->ID);
+                    }
+                }
+            }
+            // Alarm state
+            $signalLamps = json_decode($this->ReadPropertyString('AlarmStateSignalLamps'));
+            if (!empty($signalLamps)) {
+                foreach ($signalLamps as $signalLamp) {
+                    if ($signalLamp->Use) {
+                        array_push($devices, $signalLamp->ID);
+                    }
+                }
+            }
+            if (empty($devices)) {
+                return;
+            }
+            $devices = array_unique($devices);
+            $count = count($devices);
+            $i = 0;
+            foreach ($devices as $device) {
+                $i++;
+                $this->SetSignalLamp($device, 0, 0);
+                // Execution delay for next device
+                if ($count > 1 && $i < $count) {
+                    IPS_Sleep(self::DELAY_MILLISECONDS);
+                }
+            }
+        }
+    }
+
+    #################### Private
 
     /**
      * Checks if the device is also used as a system state signal lamp.
@@ -795,9 +882,14 @@ trait SIGL_signalLamp
      * 7    = white
      *
      * @param int $Brightness
+     * @throws Exception
+     * @throws Exception
      */
     private function SetSignalLamp(int $SignalLamp = 0, int $Color = 0, int $Brightness = 0): void
     {
+        if ($this->CheckMaintenanceMode()) {
+            return;
+        }
         // Semaphore Enter
         if (!IPS_SemaphoreEnter($this->InstanceID . '.SetSignalLamp', 5000)) {
             return;

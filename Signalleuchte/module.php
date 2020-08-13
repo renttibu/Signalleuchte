@@ -1,5 +1,8 @@
 <?php
 
+/** @noinspection DuplicatedCode */
+/** @noinspection PhpUnused */
+
 /*
  * @module      Signalleuchte
  *
@@ -12,20 +15,15 @@
  * @license    	CC BY-NC-SA 4.0
  *              https://creativecommons.org/licenses/by-nc-sa/4.0/
  *
- * @version     4.00-1
- * @date        2020-01-18, 18:00, 1579366800
- * @review      2020-01-29, 18:00
- *
- * @see         https://github.com/ubittner/Signalleuchte/
+ * @see         https://github.com/ubittner/Signalleuchte
  *
  * @guids       Library
  *              {CF6B75A5-C573-7030-0D75-2F50A8A42B73}
  *
  *              Signalleuchte
- *             	{CF6B75A5-C573-7030-0D75-2F50A8A42B73}
+ *             	{BFB49220-5188-61CA-2C21-85A457F8D77B}
  */
 
-// Declare
 declare(strict_types=1);
 
 // Include
@@ -34,23 +32,27 @@ include_once __DIR__ . '/helper/autoload.php';
 class Signalleuchte extends IPSModule
 {
     // Helper
+    use SIGL_backupRestore;
     use SIGL_signalLamp;
 
     // Constants
     private const DELAY_MILLISECONDS = 250;
+    private const SIGNALLEUCHTE_LIBRARY_GUID = '{CF6B75A5-C573-7030-0D75-2F50A8A42B73}';
+    private const SIGNALLEUCHTE_MODULE_GUID = '{BFB49220-5188-61CA-2C21-85A457F8D77B}';
+
+    public function Destroy()
+    {
+        // Never delete this line!
+        parent::Destroy();
+        $this->DeleteProfiles();
+    }
 
     public function Create()
     {
         // Never delete this line!
         parent::Create();
-
-        // Register properties
         $this->RegisterProperties();
-
-        // Create profiles
         $this->CreateProfiles();
-
-        // Register variables
         $this->RegisterVariables();
     }
 
@@ -58,36 +60,24 @@ class Signalleuchte extends IPSModule
     {
         // Wait until IP-Symcon is started
         $this->RegisterMessage(0, IPS_KERNELSTARTED);
-
         // Never delete this line!
         parent::ApplyChanges();
-
         // Check runlevel
         if (IPS_GetKernelRunlevel() != KR_READY) {
             return;
         }
-
-        // Set options
         $this->SetOptions();
-    }
-
-    protected function KernelReady()
-    {
-        $this->ApplyChanges();
-    }
-
-    public function Destroy()
-    {
-        // Never delete this line!
-        parent::Destroy();
-
-        // Delete profiles
-        $this->DeleteProfiles();
+        $this->CheckMaintenanceMode();
     }
 
     public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     {
         $this->SendDebug(__FUNCTION__, 'SenderID: ' . $SenderID . ', Message: ' . $Message . ' Data: ' . print_r($Data, true), 0);
+        if (!empty($Data)) {
+            foreach ($Data as $key => $value) {
+                $this->SendDebug(__FUNCTION__, 'Data[' . $key . '] = ' . json_encode($value), 0);
+            }
+        }
         switch ($Message) {
             case IPS_KERNELSTARTED:
                 $this->KernelReady();
@@ -96,7 +86,33 @@ class Signalleuchte extends IPSModule
         }
     }
 
-    //#################### Request Action
+    public function GetConfigurationForm()
+    {
+        $formData = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
+        $moduleInfo = [];
+        $library = IPS_GetLibrary(self::SIGNALLEUCHTE_LIBRARY_GUID);
+        $module = IPS_GetModule(self::SIGNALLEUCHTE_MODULE_GUID);
+        $moduleInfo['name'] = $module['ModuleName'];
+        $moduleInfo['version'] = $library['Version'] . '-' . $library['Build'];
+        $moduleInfo['date'] = date('d.m.Y', $library['Date']);
+        $moduleInfo['time'] = date('H:i', $library['Date']);
+        $moduleInfo['developer'] = $library['Author'];
+        $formData['elements'][0]['items'][2]['caption'] = "Instanz ID:\t\t" . $this->InstanceID;
+        $formData['elements'][0]['items'][3]['caption'] = "Modul:\t\t\t" . $moduleInfo['name'];
+        $formData['elements'][0]['items'][4]['caption'] = "Version:\t\t\t" . $moduleInfo['version'];
+        $formData['elements'][0]['items'][5]['caption'] = "Datum:\t\t\t" . $moduleInfo['date'];
+        $formData['elements'][0]['items'][6]['caption'] = "Uhrzeit:\t\t\t" . $moduleInfo['time'];
+        $formData['elements'][0]['items'][7]['caption'] = "Entwickler:\t\t" . $moduleInfo['developer'];
+        $formData['elements'][0]['items'][8]['caption'] = "Präfix:\t\t\tSIGL";
+        return json_encode($formData);
+    }
+
+    public function ReloadConfiguration()
+    {
+        $this->ReloadForm();
+    }
+
+    #################### Request Action
 
     public function RequestAction($Ident, $Value)
     {
@@ -137,13 +153,24 @@ class Signalleuchte extends IPSModule
                 $this->SetAlarmStateSignalLamp(3, $color, $Value);
                 break;
 
+            case 'NightMode':
+                $this->ToggleNightMode($Value);
+                break;
+
         }
     }
 
-    //#################### Private
+    #################### Private
+
+    private function KernelReady()
+    {
+        $this->ApplyChanges();
+    }
 
     private function RegisterProperties(): void
     {
+        $this->RegisterPropertyString('Note', '');
+        $this->RegisterPropertyBoolean('MaintenanceMode', false);
         // Visibility
         $this->RegisterPropertyBoolean('EnableSystemStateColor', true);
         $this->RegisterPropertyBoolean('EnableSystemStateBrightness', true);
@@ -151,13 +178,11 @@ class Signalleuchte extends IPSModule
         $this->RegisterPropertyBoolean('EnableDoorWindowStateBrightness', true);
         $this->RegisterPropertyBoolean('EnableAlarmStateColor', true);
         $this->RegisterPropertyBoolean('EnableAlarmStateBrightness', true);
-
+        $this->RegisterPropertyBoolean('EnableNightMode', true);
         // System state
         $this->RegisterPropertyString('SystemStateSignalLamps', '[]');
-
         // Door and window state
         $this->RegisterPropertyString('DoorWindowStateSignalLamps', '[]');
-
         // Alarm state
         $this->RegisterPropertyString('AlarmStateSignalLamps', '[]');
     }
@@ -195,36 +220,37 @@ class Signalleuchte extends IPSModule
     private function RegisterVariables(): void
     {
         $colorProfileName = 'SIGL.' . $this->InstanceID . '.Color';
-
         // System state
         // Color
-        $this->RegisterVariableInteger('SystemStateColor', 'Systemstatus Farbe', $colorProfileName, 1);
+        $this->RegisterVariableInteger('SystemStateColor', 'Systemstatus Farbe', $colorProfileName, 10);
         $this->EnableAction('SystemStateColor');
         $this->SetValue('SystemStateColor', 0);
         // Brightness
-        $this->RegisterVariableInteger('SystemStateBrightness', 'Systemstatus Helligkeit', '~Intensity.100', 2);
+        $this->RegisterVariableInteger('SystemStateBrightness', 'Systemstatus Helligkeit', '~Intensity.100', 20);
         $this->EnableAction('SystemStateBrightness');
         $this->SetValue('SystemStateBrightness', 10);
-
         // Door and window state
         // Color
-        $this->RegisterVariableInteger('DoorWindowStateColor', 'Tür- /Fensterstatus Farbe', $colorProfileName, 3);
+        $this->RegisterVariableInteger('DoorWindowStateColor', 'Tür- /Fensterstatus Farbe', $colorProfileName, 30);
         $this->EnableAction('DoorWindowStateColor');
         $this->SetValue('DoorWindowStateColor', 0);
         // Brightness
-        $this->RegisterVariableInteger('DoorWindowStateBrightness', 'Tür- / Fensterstatus Helligkeit', '~Intensity.100', 4);
+        $this->RegisterVariableInteger('DoorWindowStateBrightness', 'Tür- / Fensterstatus Helligkeit', '~Intensity.100', 40);
         $this->EnableAction('DoorWindowStateBrightness');
         $this->SetValue('DoorWindowStateBrightness', 10);
-
         // Alarm state
         // Color
-        $this->RegisterVariableInteger('AlarmStateColor', 'Alarmstatus Farbe', $colorProfileName, 5);
+        $this->RegisterVariableInteger('AlarmStateColor', 'Alarmstatus Farbe', $colorProfileName, 50);
         $this->EnableAction('AlarmStateColor');
         $this->SetValue('AlarmStateColor', 0);
         // Brightness
-        $this->RegisterVariableInteger('AlarmStateBrightness', 'Alarmstatus Helligkeit', '~Intensity.100', 6);
+        $this->RegisterVariableInteger('AlarmStateBrightness', 'Alarmstatus Helligkeit', '~Intensity.100', 60);
         $this->EnableAction('AlarmStateBrightness');
         $this->SetValue('AlarmStateBrightness', 10);
+        // Night mode
+        $this->RegisterVariableBoolean('NightMode', 'Nachtmodus', '~Switch', 70);
+        $this->EnableAction('NightMode');
+        IPS_SetIcon($this->GetIDForIdent('NightMode'), 'Moon');
     }
 
     private function SetOptions(): void
@@ -238,7 +264,6 @@ class Signalleuchte extends IPSModule
         $id = $this->GetIDForIdent('SystemStateBrightness');
         $use = $this->ReadPropertyBoolean('EnableSystemStateBrightness');
         IPS_SetHidden($id, !$use);
-
         // Door and window state
         // Color
         $id = $this->GetIDForIdent('DoorWindowStateColor');
@@ -248,7 +273,6 @@ class Signalleuchte extends IPSModule
         $id = $this->GetIDForIdent('DoorWindowStateBrightness');
         $use = $this->ReadPropertyBoolean('EnableDoorWindowStateBrightness');
         IPS_SetHidden($id, !$use);
-
         // Alarm state
         // Color
         $id = $this->GetIDForIdent('AlarmStateColor');
@@ -258,5 +282,24 @@ class Signalleuchte extends IPSModule
         $id = $this->GetIDForIdent('AlarmStateBrightness');
         $use = $this->ReadPropertyBoolean('EnableAlarmStateBrightness');
         IPS_SetHidden($id, !$use);
+        // Night mode
+        $id = $this->GetIDForIdent('NightMode');
+        $use = $this->ReadPropertyBoolean('EnableNightMode');
+        IPS_SetHidden($id, !$use);
+    }
+
+    private function CheckMaintenanceMode(): bool
+    {
+        $result = false;
+        $status = 102;
+        if ($this->ReadPropertyBoolean('MaintenanceMode')) {
+            $result = true;
+            $status = 104;
+            $this->SendDebug(__FUNCTION__, 'Abbruch, der Wartungsmodus ist aktiv!', 0);
+            $this->LogMessage('ID ' . $this->InstanceID . ', ' . __FUNCTION__ . ', Abbruch, der Wartungsmodus ist aktiv!', KL_WARNING);
+        }
+        $this->SetStatus($status);
+        IPS_SetDisabled($this->InstanceID, $result);
+        return $result;
     }
 }
